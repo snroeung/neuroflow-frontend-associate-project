@@ -1,23 +1,42 @@
-import logo from './logo.svg';
 import './App.css';
+import {Table} from 'react-bootstrap';
+import { mockFetchHelper } from "./mock_api";
+import albums from './albums.json'
+import { format } from 'date-fns';
 
 function App() {
+  //sort data in descending order based on last played 
+  const data = albums.albums.sort((a,b) => parseInt(b.last_listened) - parseInt(a.last_listened));
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Table bordered>
+        <thead>
+          <tr>
+            <th>Band</th>
+            <th>Album</th>
+            <th>Genres</th>
+            <th>Last Played</th>
+            <th>Date Released</th>
+          </tr>
+          <>
+              { mockFetchHelper(albums) &&
+                  data.map((item, key) => {
+                      return (
+                          <tr key={key}>
+                              <td>{item.band_name}</td>
+                              <td>{item.album_title}</td>
+                              <td>{item.genres.join(', ')}</td>
+                              <td>{format(new Date(item.last_listened), 'MM/dd/yyyy hh:mm aaaa')}</td>
+                              <td>{format(new Date(item.release_date),'MM/dd/yyyy')}</td>
+                          </tr>
+                      );
+                  })
+                }        
+          </>  
+        </thead>
+      </Table> 
+
     </div>
   );
 }
